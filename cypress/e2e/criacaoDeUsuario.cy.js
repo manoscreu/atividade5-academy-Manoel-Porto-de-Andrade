@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 
 describe("Teste de Criação de usuário", function () {
   beforeEach(function () {
@@ -37,7 +37,6 @@ describe("Teste de Criação de usuário", function () {
         .should("equal", "Este e-mail já é utilizado por outro usuário.");
     });
   });
-
   describe("Testes no campo nome", function () {
     it("Não deve ser possível criar um usuário sem preencher o campo nome", function () {
       cy.contains("a", "Novo").click();
@@ -66,7 +65,6 @@ describe("Teste de Criação de usuário", function () {
         .should("equal", "Informe pelo menos 4 letras para o nome.");
     });
   });
-
   describe("Testes no campo E-mail", function () {
     it("Não deve ser possível criar um usuário com um email invalido", function () {
       cy.contains("a", "Novo").click();
@@ -106,6 +104,18 @@ describe("Teste de Criação de usuário", function () {
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Informe pelo menos 4 caracteres para o e-mail.");
+    });
+  });
+  describe("Teste de criação valida", function () {
+    let nome = faker.person.fullName();
+    let email = faker.internet.email();
+    it("Cria um usuário valido", function () {
+      cy.contains("a", "Novo").click();
+      cy.get("#name").type(nome);
+      cy.get("#email").type(email);
+      cy.contains("button", "Salvar").click();
+      cy.get("#name").should("be.empty");
+      cy.get("#email").should("be.empty");
     });
   });
 });
