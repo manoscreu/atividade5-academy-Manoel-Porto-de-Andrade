@@ -1,14 +1,19 @@
-import { faker } from '@faker-js/faker';
+import CadastroPage from "../support/pages/cadastro.page";
+import InicialPage from "../support/pages/inicial.page";
+import { faker } from "@faker-js/faker";
 
 describe("Teste de Criação de usuário", function () {
+  var paginaCadastro = new CadastroPage();
+  var paginaInicial = new InicialPage();
   beforeEach(function () {
     cy.visit("https://rarocrud-frontend-88984f6e4454.herokuapp.com/users");
   });
   describe("Testes de criação invalida", function () {
     it("Não deve ser possível criar um usuário sem preencher os campos nome e email", function () {
-      cy.contains("a", "Novo").click();
-      cy.contains("button", "Salvar").click();
-      cy.get(".sc-cPiKLX.feFrSQ")
+      cy.get(paginaInicial.buttonNovo).click();
+      paginaCadastro.clickSalvar();
+      paginaInicial
+        .clickNovo()
         .invoke("text")
         .should(
           "equal",
@@ -25,12 +30,11 @@ describe("Teste de Criação de usuário", function () {
       cy.stub().as("stubAlerta");
 
       cy.on("window:alert", this.stubAlerta);
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type("Manel");
-      cy.get("#email").type("qa@qa.com");
-      cy.contains("button", "Salvar").click();
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome("Manoel");
+      paginaCadastro.typeEmail("qa@qa.com");
+      paginaCadastro.clickSalvar();
       cy.wait("@postUsuario");
-      //TODO criar teste com usuário ja criado com o mock do intercept
       cy.contains(".sc-dCFHLb", "p")
         .get("p")
         .invoke("text")
@@ -39,27 +43,27 @@ describe("Teste de Criação de usuário", function () {
   });
   describe("Testes no campo nome", function () {
     it("Não deve ser possível criar um usuário sem preencher o campo nome", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#email").type("qa@qa.com");
-      cy.contains("button", "Salvar").click();
+      paginaInicial.clickNovo();
+      paginaCadastro.typeEmail("qa@qa.com");
+      paginaCadastro.clickSalvar();
       cy.get(".sc-cPiKLX.feFrSQ")
         .invoke("text")
         .should("equal", "O campo nome é obrigatório.");
     });
     it("Não deve ser possível criar um usuário com nome maior que 100 caracteres", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type(
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome(
         "Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ante dui ullamcorper vel sem id pharetra"
       );
-      cy.get("#email").type("qa@qa.com");
+      paginaCadastro.typeEmail("qa@qa.com");
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Informe no máximo 100 caracteres para o nome");
     });
     it("Não deve ser possível criar um usuário com nome menor que 4 caracteres", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type("Ted");
-      cy.get("#email").type("qa@qa.com");
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome("Ted");
+      paginaCadastro.typeEmail("qa@qa.com");
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Informe pelo menos 4 letras para o nome.");
@@ -67,55 +71,62 @@ describe("Teste de Criação de usuário", function () {
   });
   describe("Testes no campo E-mail", function () {
     it("Não deve ser possível criar um usuário com um email invalido", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type("Manoel");
-      cy.get("#email").type("qa@qa");
-      cy.contains("button", "Salvar").click();
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome("Manoel");
+      paginaCadastro.typeEmail("qa@qa");
+      paginaCadastro.clickSalvar;
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Formato de e-mail inválido");
     });
 
     it("Não deve ser possível criar um usuário sem preencher o campo email", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type("Manoel");
-      cy.contains("button", "Salvar").click();
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome("Manoel");
+      paginaCadastro.clickSalvar();
       cy.get(".sc-cPiKLX.feFrSQ")
         .invoke("text")
         .should("equal", "O campo e-mail é obrigatório.");
     });
 
     it("Não deve ser possível criar um usuário com um email maior que 60 caracteres", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type("Manoel");
-      cy.get("#email").type(
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome("Manoel");
+      paginaCadastro.typeEmail(
         "LoremipsumdolorsitametconsecteturadipiscingelitMorbiantedui@qa.com"
       );
-      cy.contains("button", "Salvar").click();
+      paginaCadastro.clickSalvar();
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Informe no máximo 60 caracteres para o e-mail");
     });
     it("Não deve ser possível criar um usuário com um email menor que 4 caracteres", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type("Manoel");
-      cy.get("#email").type("ted");
-      cy.contains("button", "Salvar").click();
+      paginaInicial.clickNovo;
+      paginaCadastro.typeNome("Manoel");
+      paginaCadastro.typeEmail("ted");
+      paginaCadastro.clickSalvar();
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Informe pelo menos 4 caracteres para o e-mail.");
     });
   });
   describe("Teste de criação valida", function () {
-    let nome = faker.person.fullName();
+    let nome = faker.person.firstName();
     let email = faker.internet.email();
-    it("Cria um usuário valido", function () {
-      cy.contains("a", "Novo").click();
-      cy.get("#name").type(nome);
-      cy.get("#email").type(email);
-      cy.contains("button", "Salvar").click();
+    it.only("Cria um usuário valido", function () {
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome(nome);
+      paginaCadastro.typeEmail(email);
+      paginaCadastro.clickSalvar();
       cy.get("#name").should("be.empty");
       cy.get("#email").should("be.empty");
+      paginaCadastro.clickVoltar();
+      paginaInicial.Pesquisa(email);
+      cy.get('[data-test="userDataName"]')
+        .invoke("text")
+        .should("equal", "Nome: " + nome);
     });
   });
 });
+// 'E-mail: rhianna10@gmail.com'
+// 'E-mail: Rhianna10@gmail.com'
