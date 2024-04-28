@@ -128,5 +128,3 @@ describe("Teste de Criação de usuário", function () {
     });
   });
 });
-// 'E-mail: rhianna10@gmail.com'
-// 'E-mail: Rhianna10@gmail.com'

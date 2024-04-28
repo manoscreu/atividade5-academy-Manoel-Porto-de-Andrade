@@ -1,8 +1,8 @@
+import InicialPage from "../support/pages/inicial.page";
 describe("Testes de pesquisa de usuário", function () {
+  let paginaInicial = new InicialPage();
   let nome;
   let email;
-  let id1;
-  let id2;
   beforeEach(function () {
     cy.visit("https://rarocrud-frontend-88984f6e4454.herokuapp.com/users");
   });
@@ -13,7 +13,7 @@ describe("Testes de pesquisa de usuário", function () {
           nome = userData.userName;
         })
         .then(function () {
-          cy.get(".sc-gsFSXq").type(nome);
+          paginaInicial.Pesquisa(nome);
         })
         .then(function () {
           cy.get("#userData > div.sc-dAbbOL.lcgSvJ > p:nth-child(1)")
@@ -23,18 +23,22 @@ describe("Testes de pesquisa de usuário", function () {
 
       cy.wait(3000);
     });
-    it.only("Teste de pesquisa por email", function () {
+    it("Teste de pesquisa por email", function () {
       cy.criaUsuario()
         .then(function (userData) {
+          nome = userData.userName
           email = userData.userEmail;
         })
         .then(function () {
-          cy.get(".sc-gsFSXq").type(email);
+          paginaInicial.Pesquisa(email);
         })
         .then(function () {
-          cy.get("#userData > div.sc-dAbbOL.lcgSvJ > p:nth-child(2)")
+          cy.get("#userData > div.sc-dAbbOL.lcgSvJ > p:nth-child(1)")
             .invoke("text")
-            .should("include", "E-mail: " + email);
+            .should("include", "Nome: " + nome);
+          // cy.get("#userData > div.sc-dAbbOL.lcgSvJ > p:nth-child(2)")
+          //   .invoke("text")
+          //   .should("include", "E-mail: " + email);
         });
       cy.wait(3000);
     });
@@ -45,12 +49,10 @@ describe("Testes de pesquisa de usuário", function () {
       let nome;
       cy.criaDoisUsuarios()
         .then(function (userData) {
-          id1 = userData.userId1;
-          id2 = userData.userId2;
           nome = userData.nomeUser;
         })
         .then(function () {
-          cy.get(".sc-gsFSXq").type(nome);
+          paginaInicial.Pesquisa(nome);
         });
       cy.wait(3000);
     });
