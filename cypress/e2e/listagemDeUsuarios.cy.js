@@ -7,7 +7,7 @@ describe("Teste de listagem de usuários", function () {
   it("Clica no primeiro usuário da lista e verifica ", function () {
     paginaInicial.pegaPrimeiroUser()
     cy.get(".sc-eDPEul:eq(0)").invoke("text").should("equal", "id");
-    cy.get('[name="id"]').should("be.visible");
+    cy.get('[name="id"]').should("not.be.visible");
     cy.get(".sc-eDPEul:eq(1)").invoke("text").should("equal", "Nome*");
     cy.get("#userName").should("be.visible");
     cy.get(".sc-eDPEul:eq(2)").invoke("text").should("equal", "E-mail*");
