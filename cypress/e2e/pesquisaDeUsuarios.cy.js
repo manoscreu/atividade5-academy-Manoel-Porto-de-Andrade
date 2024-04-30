@@ -36,9 +36,6 @@ describe("Testes de pesquisa de usuário", function () {
           cy.get("#userData > div.sc-dAbbOL.lcgSvJ > p:nth-child(1)")
             .invoke("text")
             .should("include", "Nome: " + nome);
-          // cy.get("#userData > div.sc-dAbbOL.lcgSvJ > p:nth-child(2)")
-          //   .invoke("text")
-          //   .should("include", "E-mail: " + email);
         });
       cy.wait(3000);
     });

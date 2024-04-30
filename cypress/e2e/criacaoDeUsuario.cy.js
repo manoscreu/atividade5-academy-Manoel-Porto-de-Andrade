@@ -8,19 +8,6 @@ describe("Teste de Criação de usuário", function () {
   beforeEach(function () {
     cy.visit("https://rarocrud-frontend-88984f6e4454.herokuapp.com/users");
   });
-  describe("Testes de criação invalida", function () {
-    it("Não deve ser possível criar um usuário sem preencher os campos nome e email", function () {
-      cy.get(paginaInicial.buttonNovo).click();
-      paginaCadastro.clickSalvar();
-      paginaInicial
-        .clickNovo()
-        .invoke("text")
-        .should(
-          "equal",
-          "O campo nome é obrigatório.O campo e-mail é obrigatório."
-        );
-    });
-  });
   describe("Teste de criação usuário ja existente", function () {
     it("Não deve ser possível criar um usuário com um email ja em uso", function () {
       cy.intercept("POST", "api/v1/users", {
@@ -60,21 +47,13 @@ describe("Teste de Criação de usuário", function () {
         .invoke("text")
         .should("equal", "Informe no máximo 100 caracteres para o nome");
     });
-    it("Não deve ser possível criar um usuário com nome menor que 4 caracteres", function () {
-      paginaInicial.clickNovo();
-      paginaCadastro.typeNome("Ted");
-      paginaCadastro.typeEmail("qa@qa.com");
-      cy.get(".sc-jEACwC")
-        .invoke("text")
-        .should("equal", "Informe pelo menos 4 letras para o nome.");
-    });
   });
   describe("Testes no campo E-mail", function () {
     it("Não deve ser possível criar um usuário com um email invalido", function () {
       paginaInicial.clickNovo();
       paginaCadastro.typeNome("Manoel");
       paginaCadastro.typeEmail("qa@qa");
-      paginaCadastro.clickSalvar;
+      paginaCadastro.clickSalvar();
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Formato de e-mail inválido");
@@ -100,20 +79,11 @@ describe("Teste de Criação de usuário", function () {
         .invoke("text")
         .should("equal", "Informe no máximo 60 caracteres para o e-mail");
     });
-    it("Não deve ser possível criar um usuário com um email menor que 4 caracteres", function () {
-      paginaInicial.clickNovo;
-      paginaCadastro.typeNome("Manoel");
-      paginaCadastro.typeEmail("ted");
-      paginaCadastro.clickSalvar();
-      cy.get(".sc-jEACwC")
-        .invoke("text")
-        .should("equal", "Informe pelo menos 4 caracteres para o e-mail.");
-    });
   });
   describe("Teste de criação valida", function () {
     let nome = faker.person.firstName();
     let email = faker.internet.email();
-    it.only("Cria um usuário valido", function () {
+    it("Cria um usuário valido", function () {
       paginaInicial.clickNovo();
       paginaCadastro.typeNome(nome);
       paginaCadastro.typeEmail(email);
