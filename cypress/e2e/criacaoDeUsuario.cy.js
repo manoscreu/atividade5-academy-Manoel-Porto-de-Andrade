@@ -49,6 +49,14 @@ describe("Teste de Criação de usuário", function () {
     });
   });
   describe("Testes no campo E-mail", function () {
+    it("Não deve ser possível criar um usuário sem preencher o campo email", function () {
+      paginaInicial.clickNovo();
+      paginaCadastro.typeNome("Manoel");
+      paginaCadastro.clickSalvar();
+      cy.get(".sc-cPiKLX.feFrSQ")
+        .invoke("text")
+        .should("equal", "O campo e-mail é obrigatório.");
+    });
     it("Não deve ser possível criar um usuário com um email invalido", function () {
       paginaInicial.clickNovo();
       paginaCadastro.typeNome("Manoel");
@@ -57,15 +65,6 @@ describe("Teste de Criação de usuário", function () {
       cy.get(".sc-jEACwC")
         .invoke("text")
         .should("equal", "Formato de e-mail inválido");
-    });
-
-    it("Não deve ser possível criar um usuário sem preencher o campo email", function () {
-      paginaInicial.clickNovo();
-      paginaCadastro.typeNome("Manoel");
-      paginaCadastro.clickSalvar();
-      cy.get(".sc-cPiKLX.feFrSQ")
-        .invoke("text")
-        .should("equal", "O campo e-mail é obrigatório.");
     });
 
     it("Não deve ser possível criar um usuário com um email maior que 60 caracteres", function () {

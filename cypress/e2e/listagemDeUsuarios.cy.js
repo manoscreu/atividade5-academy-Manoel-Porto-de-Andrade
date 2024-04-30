@@ -13,7 +13,7 @@ describe("Teste de listagem de usuários", function () {
     cy.get(".sc-eDPEul:eq(2)").invoke("text").should("equal", "E-mail*");
     cy.get("#userEmail").should("be.visible");
   });
-  it("Clica no ultimo usuário da lista e verifica ", function () {
+  it("Clica no ultimo usuário da primeira pagina e o verifica ", function () {
     paginaInicial.pegaUltimoUser()
     cy.get(".sc-eDPEul:eq(0)").invoke("text").should("equal", "id");
     cy.get('[name="id"]').should("be.visible");
